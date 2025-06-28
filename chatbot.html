@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Chatbot ANSUT</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #eef1f5;
+    }
+
+    #chatbot-container {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 360px;
+      height: 540px;
+      background: white;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      border-radius: 16px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #ccc;
+    }
+
+    #chat-header {
+      background: #0A6C6A;
+      color: white;
+      padding: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    #chat-messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background-color: #f9f9f9;
+    }
+
+    .message {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      max-width: 90%;
+      line-height: 1.4;
+    }
+
+    .user {
+      justify-content: flex-end;
+      align-self: flex-end;
+      flex-direction: row-reverse;
+    }
+
+    .bot {
+      justify-content: flex-start;
+      align-self: flex-start;
+    }
+
+    .bubble {
+      padding: 10px 14px;
+      border-radius: 16px;
+      max-width: 80%;
+    }
+
+    .bubble.user {
+      background-color: #0A6C6A;
+      color: white;
+      border-bottom-right-radius: 0;
+    }
+
+    .bubble.bot {
+      background-color: #e2e2e2;
+      color: #333;
+      border-bottom-left-radius: 0;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #ddd;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      color: white;
+    }
+
+    .avatar.user {
+      background-color: #0A6C6A;
+    }
+
+    .avatar.bot {
+      background-color: #900E0E;
+    }
+
+    #user-input {
+      display: flex;
+      border-top: 1px solid #ddd;
+    }
+
+    #user-input input {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      font-size: 1em;
+      outline: none;
+    }
+
+    #user-input button {
+      background-color: #0A6C6A;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .typing {
+      font-style: italic;
+      color: gray;
+      margin-left: 42px;
+      font-size: 0.9em;
+    }
+  </style>
+</head>
+<body>
+  <div id="chatbot-container">
+    <div id="chat-header">Assistant ANSUT</div>
+    <div id="chat-messages"></div>
+    <div id="user-input">
+      <input type="text" id="question" placeholder="Posez une question..." />
+      <button onclick="envoyerQuestion()">➤</button>
+    </div>
+  </div>
+
+  <script>
+    const messages = document.getElementById("chat-messages");
+
+    function addMessage(text, sender = "bot") {
+      const messageDiv = document.createElement("div");
+      messageDiv.classList.add("message", sender);
+
+      const avatar = document.createElement("div");
+      avatar.classList.add("avatar", sender);
+      avatar.textContent = sender === "user" ? "👤" : "🤖";
+
+      const bubble = document.createElement("div");
+      if (sender === "bot") {
+  bubble.innerHTML = autoLink(text);
+} else {
+  bubble.textContent = text;
+}
+
+
+      bubble.textContent = text;
+
+      messageDiv.appendChild(avatar);
+      messageDiv.appendChild(bubble);
+      messages.appendChild(messageDiv);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function addTypingIndicator() {
+      const typing = document.createElement("div");
+      typing.className = "typing";
+      typing.id = "typing";
+      typing.textContent = "Assistant est en train d’écrire...";
+      messages.appendChild(typing);
+      messages.scrollTop = messages.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const typing = document.getElementById("typing");
+      if (typing) typing.remove();
+    }
+
+    async function envoyerQuestion() {
+      const input = document.getElementById("question");
+      const question = input.value.trim();
+      if (!question) return;
+
+      addMessage(question, "user");
+      input.value = "";
+      addTypingIndicator();
+
+      try {
+        const res = await fetch("http://127.0.0.1:8000/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question })
+        });
+
+        const data = await res.json();
+        removeTypingIndicator();
+        addMessage(data.reponse || "Je n’ai pas pu trouver de réponse.", "bot");
+      } catch (err) {
+        removeTypingIndicator();
+        let finalResponse = data.reponse || "Je n’ai pas pu trouver de réponse.";
+if (data.sources && data.sources.length > 0) {
+  const links = data.sources.map(src => `<a href="${src}" target="_blank" style="color:#0A6C6A;">[source]</a>`);
+  finalResponse += "<br><br><small>Sources : " + links.join(" ") + "</small>";
+}
+addMessage(finalResponse, "bot");
+
+        console.error(err);
+      }
+    }
+    function autoLink(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  return text.replace(urlRegex, (url) => {
+    return `<a href="${url}" target="_blank" style="color:#0A6C6A;text-decoration:underline;">${url}</a>`;
+  });
+}
+  </script>
+</body>
+</html>
