@@ -13,7 +13,7 @@
 # # Étape 3 : générer les embeddings
 # embeddings = GoogleGenerativeAIEmbeddings(
 #     model="models/embedding-001",
-#     google_api_key="AIzaSyCchajXnFcyG0zSFo-DPudVdIqgSO0vwrs"  # ← remplace ici par ta vraie clé Google Generative AI
+#     google_api_key="met_ta_clé_api"  # ← remplace ici par ta vraie clé Google Generative AI
 # )
 
 # # Étape 4 : construire et sauvegarder la base FAISS
