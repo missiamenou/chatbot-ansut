@@ -21,14 +21,14 @@
 # # Charger les embeddings + base vectorielle + modèle LLM
 # embeddings = GoogleGenerativeAIEmbeddings(
 #     model="models/embedding-001",
-#     google_api_key="AIzaSyCchajXnFcyG0zSFo-DPudVdIqgSO0vwrs"  # ← remplace par ta vraie clé
+#     google_api_key="met_ta_clé_api"  # ← remplace par ta vraie clé
 # )
 
 # db = FAISS.load_local("vectordb_ansut", embeddings, allow_dangerous_deserialization=True)
 
 # llm = ChatGoogleGenerativeAI(
 #     model="gemini-1.5-flash",
-#     google_api_key="AIzaSyCchajXnFcyG0zSFo-DPudVdIqgSO0vwrs"  # ← la même clé
+#     google_api_key="met_ta_clé_api"  # ← la même clé
 # )
 
 # @app.post("/chat")
@@ -77,14 +77,14 @@ app.add_middleware(
 # Initialisation
 embeddings = GoogleGenerativeAIEmbeddings(
     model="models/embedding-001",
-    google_api_key="AIzaSyCchajXnFcyG0zSFo-DPudVdIqgSO0vwrs"
+    google_api_key="met_ta_clé_api"
 )
 
 db = FAISS.load_local("vectordb_ansut", embeddings, allow_dangerous_deserialization=True)
 
 llm = ChatGoogleGenerativeAI(
     model="gemini-1.5-flash",
-    google_api_key="AIzaSyCchajXnFcyG0zSFo-DPudVdIqgSO0vwrs"
+    google_api_key="met_ta_clé_api"
 )
 
 @app.post("/chat")
