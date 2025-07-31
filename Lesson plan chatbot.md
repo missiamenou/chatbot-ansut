@@ -83,6 +83,47 @@ L’image est construite avec :
 
 ✅ Cas de vérification de la base de connaissance (ex. : mot-clé "ZEBRA42")
 
+# **Comment utiliser le chatbot ANSUT en local**
+
+1. ## Prérequis
+
+* Python 3.10 ou +
+
+* Docker (facultatif mais recommandé)
+
+* Clé API Google Generative AI (pour Gemini)
+
+* Fichier base_ansut.txt (ta base de connaissance)
+
+* Git (si tu clones le projet depuis GitHub)
+
+2. ## Cloner le dépôt
+* git clone https://github.com/ton-utilisateur/chatbot-ansut.git
+* cd chatbot-ansut
+
+3. ## Créer un environnement virtuel (optionnel mais recommandé)
+* python3 -m venv env
+* source env/bin/activate  # macOS/Linux
+* .\env\Scripts\activate   # Windows
+
+4. ## Installer les dépendances
+pip install -r requirements.txt
+
+5. ## Définir ta clé API
+Tu peux créer un fichier .env ou l’ajouter à ton terminal :
+* export GOOGLE_API_KEY="votre_clé_google"
+
+6. ## Lancer l’API
+uvicorn main:app --reload
+
+7. ## Interface web (chatbot.html)
+Tu peux lancer le chatbot visuellement :
+* Ouvre un terminal dans le dossier du fichier chatbot.html
+* Lance un serveur simple :
+    python3 -m http.server 9000
+* Ouvre http://localhost:9000/chatbot.html
+
+
 # **Conclusion**
 
 Le projet a permis de mettre en œuvre une architecture **RAG complète**, connectée à une base de documents personnalisée.  
